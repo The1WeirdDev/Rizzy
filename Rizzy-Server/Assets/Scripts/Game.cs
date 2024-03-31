@@ -36,6 +36,9 @@ public class Game
 
     public static int alive_players = 0;
 
+    //This is just for local player testing in unity
+    public static bool allow_monster = false;
+
     public static void Init()
     {
         host = null;
@@ -56,11 +59,18 @@ public class Game
             p.Value.SetPosition(Vector3.zero);
         }
         alive_players = Player.players.Count;
-        monster_plr = Player.players.ElementAt(Random.Range(1, Player.players.Count) - 1).Value;
         is_game_started = true;
         time_started = Time.time;
         last_kill_time = Time.time;
 
+#if UNITY_EDITOR
+        if (allow_monster)
+            monster_plr = Player.players.ElementAt(Random.Range(1, Player.players.Count) - 1).Value;
+        else
+            monster_plr = null;
+#else
+        monster_plr = Player.players.ElementAt(Random.Range(1, Player.players.Count) - 1).Value;
+#endif
         ServerSend.OnGameStarted();
         Debug.Log("Game Started");
     }

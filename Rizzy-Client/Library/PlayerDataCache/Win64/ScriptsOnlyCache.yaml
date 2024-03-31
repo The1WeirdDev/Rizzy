@@ -28,7 +28,6 @@ ScriptsOnlyBuild:
     - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.StateMachineInspector
     - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
@@ -153,7 +152,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 5712}
     - Class: 114
-      Script: {instanceID: 6026}
+      Script: {instanceID: 6028}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -190,7 +189,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 4182}
     - Class: 114
-      Script: {instanceID: 6546}
+      Script: {instanceID: 6548}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -247,9 +246,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 5712}
     - Class: 114
-      Script: {instanceID: 6026}
+      Script: {instanceID: 6028}
     - Class: 114
-      Script: {instanceID: 7160}
+      Script: {instanceID: 7162}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -291,7 +290,7 @@ ScriptsOnlyBuild:
     className: PanelRaycaster
   - hash:
       serializedVersion: 2
-      Hash: fb4b66d26e9bb7dac2156550544c7597
+      Hash: e823d379fa1488e01c55515ffe99a389
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: LocalSurvivor
@@ -1029,6 +1028,12 @@ ScriptsOnlyBuild:
     className: TextMeshProUGUI
   - hash:
       serializedVersion: 2
+      Hash: ec2bbdac46e80c852d3097c02d423249
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: NonLocalPlayer
+  - hash:
+      serializedVersion: 2
       Hash: 751e5bae2a317288c2ab58d66687092b
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
@@ -1357,15 +1362,9 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: ec2bbdac46e80c852d3097c02d423249
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: NonLocalPlayer
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainMenu.unity
   - Assets/Scenes/NetworkHandler.unity
   - Assets/Scenes/Riggy-Map-0.unity
-  playerPath: D:/Projects/Unity/Riggy/Build/Rizzy.exe
+  playerPath: D:/Projects/Unity/Rizzy/Rizzy-Client/Build/Windows/Rizzy-Client.exe

@@ -51,7 +51,14 @@ class ServerSend{
     public static void OnGameStarted()
     {
         Message m = Message.Create(MessageSendMode.Reliable, (ushort)ServerMessages.StartGame);
+#if UNITY_EDITOR
+        if(Game.allow_monster)
+            m.AddUShort(Game.monster_plr.id);
+        else
+            m.AddUShort(0);
+#else
         m.AddUShort(Game.monster_plr.id);
+#endif
         m.AddByte(Game.monster_wait_time);
         m.AddInt(Player.players.Count);
         foreach(var p in Player.players){
