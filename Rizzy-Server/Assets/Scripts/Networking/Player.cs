@@ -17,13 +17,22 @@ public class Player
     public bool is_alive = true;
     public bool is_crouching = false;
 
+    //Host item scripts
+    public GameObject game_object;
     public Vector3 position;
     public Vector3 rotation;
+
+    public Component item = null;
 
     public Player(ushort id)
     {
         this.id = id;
         this.is_alive = true;
+    }
+
+    public void DestroyGameObject()
+    {
+        UnityEngine.Object.Destroy(game_object);
     }
 
     public void SetPosition(Vector3 position)

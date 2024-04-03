@@ -7,7 +7,20 @@ using Riptide.Utils;
 
 
 class ServerSend{
+    //Doesnt contain every message sent
 
+    public static void SendMessage(ushort id, Message message)
+    {
+        GameServer.server.Send(message, id);
+    }
+    public static void SendMessageToAll(Message message)
+    {
+        GameServer.server.SendToAll(message);
+    }
+    public static void SendMessageToAll(Message message, ushort id)
+    {
+        GameServer.server.SendToAll(message, id);
+    }
     public static void SendTickSync()
     {
         Message message = Message.Create(MessageSendMode.Unreliable, (ushort)ServerMessages.SyncTick);

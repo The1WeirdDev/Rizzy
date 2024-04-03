@@ -60,6 +60,7 @@ public class MainMenuUIHandler : MonoBehaviour
         }
         microphone_clip = Microphone.Start(Microphone.devices[0], true, 1, frequency);
         source.clip = microphone_clip;
+
         start_button.gameObject.SetActive(false);
         start_button.onClick.AddListener(() =>
         {
@@ -129,7 +130,7 @@ public class MainMenuUIHandler : MonoBehaviour
         }
 
         Debug.Log("IP " + ip);
-        GameClient.Connect(ip, 7777);
+        GameClient.Connect(ip, 8888);
     }
 
     public void QuitApplication()

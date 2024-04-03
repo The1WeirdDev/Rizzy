@@ -5,6 +5,8 @@ using UnityEngine.UIElements;
 
 public class LocalPlayer : Character
 {
+    public Transform view_object;
+
     public float gravity_constant = -9.81f;
     public float speed = 2.0f;
     public float speed_multiplier = 1.0f;
@@ -37,13 +39,14 @@ public class LocalPlayer : Character
 
     protected void GetLocalComponents()
     {
+        view_object = transform.GetChild(0);
         controller = GetComponent<CharacterController>();
         camera = this.transform.GetChild(0).GetComponent<Camera>();
         ground_check = this.transform.GetChild(1).GetChild(0);
     }
     protected void BaseUpdate()
     {
-        
+        CheckForDoorInteractions();
     }
     protected void BaseFixedUpdate()
     {
@@ -54,6 +57,26 @@ public class LocalPlayer : Character
     public void LockMouse()
     {
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    protected void CheckForDoorInteractions()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            float yaw_rad = yaw * Mathf.Deg2Rad;
+            float pitch_rad = pitch * Mathf.Deg2Rad;
+            Vector3 ray_start = view_object.position;
+            Vector3 ray_dir = Vector3.Normalize(new Vector3(Mathf.Sin(yaw_rad) * Mathf.Cos(pitch_rad), -Mathf.Sin(pitch_rad), Mathf.Cos(yaw_rad) * Mathf.Cos(pitch_rad)));
+            float length = 2.5f;
+            Ray r = new Ray(ray_start, ray_dir);
+            if (Physics.Raycast(r, out RaycastHit hit_info, length))
+            {
+                if (hit_info.collider.transform.parent.gameObject.TryGetComponent(out Door door))
+                {
+                    door.OnInteract();
+                }
+            }
+        }
     }
 
     protected void CalculateCameraBobbing()

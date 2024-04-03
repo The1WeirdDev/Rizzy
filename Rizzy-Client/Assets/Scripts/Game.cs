@@ -7,22 +7,28 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public enum ClientMessages : ushort
 {
-    Start = 0,
-    SetPositionAndRot = 1,
+    Start,
+    SetPositionAndRot,
     SendRequestKill,
-    SetCrouchingMode
+    RequestItemPickup,
+    UseItem,
+    SetCrouchingMode,
+    SetDoorStatus
 }
 public enum ServerMessages : ushort
 {
-    SyncTick = 0,
+    SyncTick,
     SetLobbyData,
     SetHost,
     StartGame,
     PlayerLeft,
-    SetPlayersPositionAndRotationData,
     PlayerDied,
+    SetPlayersPositionAndRotationData,
+    SetItem,
+    SetDoorStatus
 }
 public class NonLocalPlayerObject
 {
@@ -33,8 +39,8 @@ public class NonLocalPlayerObject
 public class Game : MonoBehaviour
 {
     public static Game instance;
-    public static bool is_host = false;
-    public static bool is_monster = false;
+
+    #region TICKS
 
     private static uint _server_tick;
     public static uint server_tick
@@ -60,10 +66,14 @@ public class Game : MonoBehaviour
             interpolation_tick = (ushort)(server_tick - value);
         }
     }
+    #endregion
 
     public static Dictionary<ushort, NonLocalPlayerObject> other_players = new Dictionary<ushort, NonLocalPlayerObject>();
+    public static List<Door> doors = new List<Door>();
     public static ushort monster_id = 0;
     public static byte monster_wait_time = 5;
+    public static bool is_host = false;
+    public static bool is_monster = false;
 
     [Header("Player Prefabs")]
     public GameObject other_plr_prefab = null;
@@ -75,6 +85,9 @@ public class Game : MonoBehaviour
     public Transform monster_spawn = null;
     public Transform survivor_spawn = null;
 
+    [Header("Map Items")]
+    public WorldItem[] items;
+
     [HideInInspector] public GameObject local_player_object;
     [HideInInspector] public LocalPlayer lplr_script;
     //Each instance is inside the map
@@ -83,6 +96,7 @@ public class Game : MonoBehaviour
         //This gets called when the map is loaded. aka game started
         instance = this;
         server_tick = 2;
+        doors.Clear();
 
         if (Game.is_monster)
         {
@@ -147,5 +161,15 @@ public class Game : MonoBehaviour
         non_local_plr_object.script.view_object = non_local_plr_object.view_object.transform;
 
         other_players.Add(id, non_local_plr_object);
+    }
+
+    public static void OnPickupItem(string item_id)
+    {
+        Debug.Log($"Picked up item \"{item_id}\"");
+    }
+
+    public static NonLocalPlayerObject GetNonLocalPlayer(ushort id)
+    {
+        return other_players.GetValueOrDefault(id);
     }
 }

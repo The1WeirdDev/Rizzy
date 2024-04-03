@@ -37,6 +37,12 @@ public class ServerHandle
 
         ushort id = e.Client.Id;
         Player p = Player.players.GetValueOrDefault(id);
+        
+        if(p.item != null)
+        {
+            ((Item)p.item).world_item.is_picked_up = false;
+            p.DestroyGameObject();
+        }
         if (p.is_alive) Game.alive_players--;
 
         //Remove from list and check for new host
@@ -127,12 +133,89 @@ public class ServerHandle
     {
         bool value = m.GetBool();
 
-
         Player p = Player.players[from_client_id];
 
         if(p != null)
         {
             p.SetCrouchingMode(value);
+        }
+    }
+
+    [MessageHandler((ushort)ClientMessages.RequestItemPickup)]
+    public static void OnRequestItemPickup(ushort from_client_id, Message m)
+    {
+        Player player = Player.players[from_client_id];
+
+        if (player == null) return;
+        string item_id = m.GetString();
+
+        if (item_id == "") { Debug.Log($"User {from_client_id} is requesting to pickup null item id"); return; }
+
+        for(var i = 0; i < Game.instance.current_map.items.Length; i++)
+        {
+            WorldItem item = Game.instance.current_map.items[i];
+            if(item.id == item_id)
+            {
+                //The user is attempting to pick up this item
+                Message message = Message.Create(MessageSendMode.Reliable, (ushort)ServerMessages.SetItem);
+                if (item.is_picked_up)
+                {
+                    return;
+                }
+
+                if(player.item != null)
+                {
+                    //Setting the world item of their current one to the new ones position and swapping
+                    Item player_item = ((Item)player.item);
+                    player_item.world_item.item_transform.position = item.item_transform.position;
+                    player_item.world_item.is_picked_up = false;
+                    player.DestroyGameObject();
+                    player.item = null;
+                }
+
+                Debug.Log($"User {from_client_id} is picking up {item_id}");
+                message.AddUShort(from_client_id);
+                message.AddBool(true);
+                message.AddString(item.id);
+                item.is_picked_up = true;
+
+                player.game_object = new GameObject(item.id);
+
+                //Create item and set references
+                player.item = player.game_object.AddComponent(item.script.GetClass());
+                ((Item)player.item).world_item = item;
+                ((Item)player.item).player = player;
+                ((Item)player.item).id = item.id;
+
+                ServerSend.SendMessageToAll(message);
+            }
+        }
+    }
+
+    [MessageHandler((ushort)ClientMessages.UseItem)]
+    public static void HandleUseItem(ushort from_client_id, Message message)
+    {
+        Player player = Player.players[from_client_id];
+
+        if (player == null) return;
+        if (player.item == null) return;
+        ((Item)player.item).OnUse();
+    }
+
+    [MessageHandler((ushort)ClientMessages.SetDoorStatus)]
+    public static void HandleSetDoorStatus(ushort from_client_id, Message message)
+    {
+        string door_id = message.GetString();
+
+        for(int i = 0; i < Game.instance.current_map.doors.Count(); i++)
+        {
+            Door door = Game.instance.current_map.doors[i];
+
+            if (door.id != door_id) continue;
+
+            if (door.is_locked) return;
+            door.AttemptToggle();
+            return;
         }
     }
 }  

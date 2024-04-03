@@ -6,27 +6,35 @@ using UnityEngine.UIElements;
 
 public enum ClientMessages : ushort
 {
-    Start = 0,
-    SetPositionAndRot = 1,
+    Start,
+    SetPositionAndRot,
     SendRequestKill,
-    SetCrouchingMode
+    RequestItemPickup,
+    UseItem,
+    SetCrouchingMode,
+    SetDoorStatus
 }
 public enum ServerMessages : ushort
 {
-    SyncTick=0,
+    SyncTick,
     SetLobbyData,
     SetHost,
     StartGame,
     PlayerLeft,
+    PlayerDied,
     SetPlayersPositionAndRotationData,
-    PlayerDied
+    SetItem,
+    SetDoorStatus
 }
-public class Game
+public class Game : MonoBehaviour
 {
+    public static Game instance;
     public static uint tick;
     public static bool is_game_started = false;
+
     public static Player host;
     public static Player monster_plr;
+
     public static byte monster_wait_time = 3;
     public static float monster_kill_range = 0.5f;
     public static float monster_kill_cooldown = 1.0f;
@@ -38,6 +46,16 @@ public class Game
 
     //This is just for local player testing in unity
     public static bool allow_monster = false;
+
+    [HideInInspector]
+    public Map current_map;
+    public Map map1;
+
+    public void Awake()
+    {
+        instance = this;
+        current_map = map1;
+    }
 
     public static void Init()
     {
@@ -54,9 +72,16 @@ public class Game
         //Reset Characters
         foreach(var p in Player.players)
         {
-            p.Value.is_monster = false;
-            p.Value.is_alive = true;
-            p.Value.SetPosition(Vector3.zero);
+            Player player = p.Value;
+            player.is_monster = false;
+            player.is_alive = true;
+            player.SetPosition(Vector3.zero);
+            player.item = null;
+        }
+
+        for(var i = 0; i < instance.current_map.items.Length; i++)
+        {
+            instance.current_map.items[i].is_picked_up = false;
         }
         alive_players = Player.players.Count;
         is_game_started = true;

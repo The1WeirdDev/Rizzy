@@ -10,9 +10,13 @@ using UnityEngine;
 
 public class ClientSend
 {
+    public static void SendMessage(Message message)
+    {
+        GameClient.client.Send(message);
+    }
     public static void SendStart()
     {
-        GameClient.client.Send(Message.Create(MessageSendMode.Reliable, (ushort)ClientMessages.Start));
+        SendMessage(Message.Create(MessageSendMode.Reliable, (ushort)ClientMessages.Start));
     }
 
     public static void SendPositionAndRot(Vector3 position, Vector3 rotation)
@@ -24,19 +28,39 @@ public class ClientSend
         m.AddFloat(rotation.x);
         m.AddFloat(rotation.y);
         m.AddFloat(rotation.z);
-        GameClient.client.Send(m);
+        SendMessage(m);
     }
 
     public static void SendCrouching(bool value)
     {
         Message m = Message.Create(MessageSendMode.Reliable, (ushort)ClientMessages.SetCrouchingMode);
         m.Add(value);
-        GameClient.client.Send(m);
+        SendMessage(m);
     }
     public static void SendRequestKill()
     {
         Message m = Message.Create(MessageSendMode.Reliable, (ushort)ClientMessages.SendRequestKill);
 
-        GameClient.client.Send(m);
+        SendMessage(m);
+    }
+
+    public static void RequestItemPickup(string item_id)
+    {
+        Message m = Message.Create(MessageSendMode.Reliable, (ushort)ClientMessages.RequestItemPickup);
+        m.AddString(item_id);
+        SendMessage(m);
+    }
+
+    public static void RequestUseItem()
+    {
+        Message m = Message.Create(MessageSendMode.Reliable, (ushort)ClientMessages.UseItem);
+        SendMessage(m);
+    }
+
+    public static void RequestToggleDoor(string door_id)
+    {
+        Message m = Message.Create(MessageSendMode.Reliable, (ushort)ClientMessages.SetDoorStatus);
+        m.AddString(door_id);
+        SendMessage(m);
     }
 }

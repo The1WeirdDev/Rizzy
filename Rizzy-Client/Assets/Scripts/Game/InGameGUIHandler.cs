@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 class InGameGUIHandler : MonoBehaviour {
     public static InGameGUIHandler instance;
@@ -13,9 +14,11 @@ class InGameGUIHandler : MonoBehaviour {
 
     private GameObject countdown_gui;
     private GameObject death_gui;
+    private GameObject inventory_gui;
     private TMP_Text countdown_gui_text;
     private TMP_Text time_remaining_text;
     private TMP_Text current_countdown_text = null;
+    private Image item_image = null;
     private float time_remaining = 0;
     private float last_time_check = 0;
 
@@ -30,12 +33,27 @@ class InGameGUIHandler : MonoBehaviour {
         time_remaining_text = canvas.transform.GetChild(1).GetComponent<TMP_Text>();
 
         death_gui = canvas.transform.GetChild(2).gameObject;
+        inventory_gui = canvas.transform.GetChild(4).gameObject;
+        item_image = inventory_gui.transform.GetChild(1).GetComponent<Image>();
 
         DisableCountdownGUI();
         DisableTimeRemainingGUI();
         DisableDeathGUI();
+        EnableInventoryGUI();
     }
 
+    public void SetImage(Sprite sprite)
+    {
+        item_image.sprite = sprite;
+    }
+    public void EnableInventoryGUI()
+    {
+        inventory_gui.SetActive(true);
+    }
+    public void HideInventoryGUI()
+    {
+        inventory_gui.SetActive(false);
+    }
     public void EnableCountdownGUI()
     {
         countdown_gui.SetActive(true);
@@ -61,6 +79,7 @@ class InGameGUIHandler : MonoBehaviour {
 
     public void ShowDeathGUI()
     {
+        HideInventoryGUI();
         DisableCountdownGUI();
         DisableTimeRemainingGUI();
         death_gui.SetActive(true);

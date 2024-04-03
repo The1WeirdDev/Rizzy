@@ -21,7 +21,7 @@ class UIHandler : MonoBehaviour
     public void Start()
     {
 #if !UNITY_EDITOR
-        GameServer.Start(20, 7777);
+        GameServer.Start(20, 8888);
 #endif
         Screen.fullScreen = false;
         Screen.SetResolution(1280, 720, false);
@@ -35,7 +35,7 @@ class UIHandler : MonoBehaviour
     {
         if (start)
         {
-            GameServer.Start(20, 7777);
+            GameServer.Start(20, 8888);
             text.text = "Stop Server";
         }
         else
